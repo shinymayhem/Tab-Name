@@ -135,7 +135,7 @@ augroup END
 
 call s:RefreshTab()
 
-command! -nargs=1 TName call s:SetTabName(<args>)
+command! -nargs=1 TName call s:SetTabName(<q-args>)
 command! TNoName call s:RemoveTabName()
 
 
