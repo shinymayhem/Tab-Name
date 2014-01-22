@@ -2,6 +2,8 @@
 Simple tab renaming with session persistence.
 Based off [Mykola Golubyev's script](http://www.vim.org/scripts/script.php?script_id=1678) and partially [taboo](https://github.com/gcmt/taboo.vim)
 
+I created this because I work with a lot of servers over SSH, many of which have Vim 7.2. If you have version 7.3, look into the more full-featured taboo plugin. 
+
 ##Compatibility
 Only tested on Vim command-line version 7.2 and GUI version 7.3  
 It might work with other versions
