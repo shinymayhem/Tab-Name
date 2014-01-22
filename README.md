@@ -31,3 +31,8 @@ set sessionoptions+=tabpages,globals
 
 Map a shortcut
 `:nnoremap <F2> :TabRename `
+
+##Options
+Use the following options in your `~/.vimrc` to configure the plugin
+
+`let g:UnnamedTab = "custom text"` - set default unnamed tab text

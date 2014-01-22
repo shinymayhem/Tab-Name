@@ -15,13 +15,19 @@ let tab_rename_plugin = 1 "only load once
 "globals that start with a capital are saved with the session
 let g:Tab_list = get(g:, "Tab_list", "")
 
+let g:UnnamedTab = get(g:, "UnnamedTab", "no name")
+
 function! s:RenameTab(name)
-    let t:tab_name = a:name
+    "let t:tab_name = a:name
+    let tab_number = tabpagenr()
+    call SetTabVar(tab_number, 'tab_name', a:name)
     call s:RefreshTab()
 endfunction
 
 function! s:UnnameTab()
-    unlet t:tab_name
+    "unlet t:tab_name
+    let tab_number = tabpagenr()
+    call SetTabVar(tab_number, 'tab_name', g:UnnamedTab)
     call s:RefreshTab()
 endfunction
 
@@ -38,9 +44,23 @@ function! s:RefreshTab()
     endif
 endfunction
 
+"backwards compatibility function, settabvar not implemented until 7.2.438
+"set a tabwinvar in each window in the tab
+function! SetTabVar(tab_number, variable_name, value)
+    for win_number in range(1, tabpagewinnr(a:tab_number, '$'))
+        call settabwinvar(a:tab_number, win_number, a:variable_name, a:value)
+    endfor
+endfunction
+
+function! GetTabVar(tab_number, variable_name)
+    let win_number = 1
+    let var = gettabwinvar(a:tab_number, win_number, a:variable_name)
+    return var
+endfunction
+
 function! TabCaptionLabel(number)
     let caption = ""
-    let tab_name = gettabvar(a:number, 'tab_name') 
+    let tab_name = GetTabVar(a:number, 'tab_name') 
 
     let buflist = tabpagebuflist(a:number)
     let winnr = tabpagewinnr(a:number)
@@ -49,7 +69,7 @@ function! TabCaptionLabel(number)
     if tab_name == ''
         let bufname = pathshorten(buf_name)
         if bufname == ""
-            let caption .= "no name"
+            let caption .= g:UnnamedTab
         else
             "let caption .= "b:".bufname
             let caption .= "no name"
@@ -64,7 +84,7 @@ function! TabGuiCaptionLabel()
     let caption = '['
     let tab_number = v:lnum
     let bufnrlist = tabpagebuflist(tab_number)
-    let tab_name = gettabvar(tab_number, 'tab_name')
+    let tab_name = GetTabVar(tab_number, 'tab_name')
 
     let caption .= tab_number
 
@@ -141,7 +161,7 @@ function! s:TabRestore()
         for rawtab in split(get(g:, 'Tab_list', ""), "\n")
             let tabnr = split(rawtab, "\t")[0]
             let label = split(rawtab, "\t")[1]
-            call settabvar(tabnr, "tab_name", label)
+            call SetTabVar(tabnr, "tab_name", label)
         endfor
     endif
 endfunction
